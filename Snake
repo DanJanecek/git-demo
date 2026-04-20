@@ -1,0 +1,73 @@
+import pygame
+import random
+
+#Inicializace pygame
+pygame.init()
+
+#Nastavení okna
+WIDTH, HEIGHT = 600,400
+win = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Hra Had")
+
+#Barvy
+WHITE = (255,255,255)
+BLACK = (0,0,0)
+GREEN = (0,255,0)
+RED = (255,0,0)
+
+#Hodiny pro řízení rychlosti hry
+clock = pygame.time.Clock()
+FPS = 10
+
+#Velikost hada a jídla
+SIZE = 20
+
+#Startovní pozice hada
+snake = [(100,100)]
+dx, dy = SIZE, 0
+
+#Jídlo
+food = (random.randrange(0, WIDTH, SIZE), random.randrange(0, HEIGHT, SIZE))
+
+#Hlavní smyčka
+running = True
+while running:
+  clock.tick(FPS)
+  for event in pygame.event.get():
+    if event.type == pygame.QUIT:
+      running = False
+    elif event.type == pygame.KEYDOWN:
+      if event.key == pygame.K_LEFT:
+        dx,dy = -SIZE, 0
+      elif event.key == pygame.K_RIGHT:
+        dx, dy = SIZE, 0
+      elif event.key == pygame.K_UP:
+        dx, dy = 0, -SIZE
+      elif event.key == pygame.K_DOWN:
+        dx, dy = 0, SIZE
+
+#Posun hada
+head_x, head_y = snake[-1]
+new_head = (head_x + dx, head_y + dy)
+snake.append(new_head)
+
+#Kontrola kolize s jídlem
+  if new_head == food:
+  food = (random.randrange(0, WIDTH, SIZE), random.randrange (0, HEIGHT, SIZE)
+  else:
+  snake.pop(0)
+
+#Kontrola kolize s okrajem nebo se sebou
+  if (new_head[0] < 0 or new_head[0] >= WIDTH or new_head[1] < 0 or new_head[1] >=HEIGHT
+or
+    new_head in snake[:-1]):
+    print("Konec hry!")
+    running = False
+
+  win.fill(BLACK)
+  for segment in snake:
+    pygame.draw.rect(win, GREEN, (*segment, SIZE, SIZE))
+  pygame.draw.rect(win, RED, (*food, SIZE, SIZE))
+  pygame.display.update()
+pygame.quit()
+
